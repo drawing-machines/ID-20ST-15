@@ -18,8 +18,8 @@ BOT FIRMWARE V0.4.0
 
 /* PIN MAPPING
    -------------------------------------- */
-#define ARM_END_STOP_PIN    4 // arm end limit  
-#define ARM_HOME_STOP_PIN   3 // arm home limit (0 mm)
+#define ARM_END_STOP_PIN    3 // arm end limit  
+#define ARM_HOME_STOP_PIN   4 // arm home limit (0 mm)
 
 #define BASE_HOME_STOP_PIN  5 // base home limit (0 deg)
 #define BASE_END_STOP_PIN   A5 // base end limit (180 deg)
@@ -296,7 +296,6 @@ void movePenToNewPosition() {
     armStp.run();
     
   } else {
-    
      //TODO: runto
      af_armStp->release();
   }
@@ -321,7 +320,6 @@ void movePenToNewPosition() {
     baseStp.run();
     
   } else {
-    Serial.println('release');
     af_baseStp->release();
     //TODO: runto
   }
@@ -335,7 +333,7 @@ void checkStops() {
   baseHomeStopState = digitalRead(BASE_HOME_STOP_PIN);
   baseEndStopState  = digitalRead(BASE_END_STOP_PIN);
   
-  if(armHomeStopState == LOW){
+  if(armHomeStopState == LOW) {
 
     armStp.setCurrentPosition(0);
     currArmPos = 0;
@@ -345,7 +343,7 @@ void checkStops() {
     }
   }
   
-  if(armEndStopState == LOW){
+  if(armEndStopState == LOW) {
 
     armStp.setCurrentPosition(MAX_ARM_STEPS);
     currArmPos = MAX_ARM_STEPS;
@@ -355,8 +353,8 @@ void checkStops() {
     }
   }
   
-  if(baseHomeStopState == LOW){
-
+  if(baseHomeStopState == LOW) {
+    Serial.println("base home stop pin");
     baseStp.setCurrentPosition(0);
     currBasePos = 0;
     if(!atBaseStop) {
@@ -365,7 +363,7 @@ void checkStops() {
     }
   }
   
-  if(baseEndStopState == LOW){
+  if(baseEndStopState == LOW) {
 
     baseStp.setCurrentPosition(MAX_BASE_STEPS);
     currBasePos = MAX_BASE_STEPS;
