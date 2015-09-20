@@ -5,7 +5,7 @@
 
 Welcome to Drawing Machines! This repository contains all software and firmware examples used throughout the 2015 RISD ID Drawing Machines Course (ID-20ST-15).
 
-Thise repository will primarily make use of two branches: `master` and `dev`. The `master` branch will be the most stable and tested code, while the development (or dev) branch will less stable and tested code, used for development. At times you may see feature branches (i.e. `some-new-feature`). These are used to develop (big surprise) new features (or separate streams of work) that will eventually get pulled back into the `dev` branch, and later into the stable (and tested) `master` branch. You shouldn't need to use code in any of the feature or development branches unless you are contributing to the code examples in some way. If you would like to contribute code please contact `mmansion@risd.edu` or `kuanju@tellart.com`. Note that you are free to fork any of the branches and develop separate streams of work at any time.
+Thise repository will primarily make use of two branches: `master` and `dev`. The `master` branch will be the most stable and tested code, while the development (or dev) branch will less stable code, used for development. At times you may see feature branches (i.e. `some-new-feature`). These are used to develop (big surprise) new features (or separate streams of work) that will eventually get pulled back into the `dev` branch, and later into the stable (and tested) `master` branch. You shouldn't need to use code in any of the feature or development branches unless you are contributing to the code examples in some way. If you would like to contribute code please contact `mmansion@risd.edu` or `kuanju@tellart.com`. Note that you are free to fork any of the branches and develop separate streams of work at any time.
 
 
 ###Getting Started
@@ -66,25 +66,28 @@ The Arduino firmware for the Draw Bot requires two additional libraries be insta
 	
 	<img src="_images/arduino_done_uploading.png" width="300px">
 	
-8. Plug in the motor power cable to the Drawing Bot
+#### Running the bot
+
+
+1. With the USB still connected, plug in the motor power cable the robot.
 
 	<img src="_images/connect_motor_power.png" width="300px">
 
 
-9. Open the `BOT_APP_MANUAL.pde` sketch in Processing and click the `run` button.
+2. Open the `BOT_APP_MANUAL.pde` sketch in Processing and click the `run` button.
 
 	<img src="_images/bot_app_manual_sketch.png" width="300px">
 	
 	<img src="_images/bot_app_manual_run.png" width="300px">
 	
-10. At the bottom of the Processing window, in the console, look for the `port` number that the Arduino is connected to. Enter this `PORT_NUM` at the top of the sketch, and run the app again.11. 
+3. At the bottom of the Processing window, in the console, look for the `port` number that the Arduino is connected to. Enter this `PORT_NUM` at the top of the sketch, and run the app again.11. 
 
 	
 	<img src="_images/log_port_num.png" width="300px">
 	
 	<img src="_images/enter_port_num.png" width="300px">
 	
-11. If the `BOT_APP_MANUAL` connected succesfully to the Drawing Bot, you should be able to click on any of th controls to move the robot's arm forward, backward, left, and right. Clicking the center button raises and lowers the pen. You may also use the arrow keys up, down, left, right for direction; and the spacebar for controlling the pen servo.
+4. If the `BOT_APP_MANUAL` connected succesfully to the Drawing Bot, you should be able to click on any of th controls to move the robot's arm forward, backward, left, and right. Clicking the center button raises and lowers the pen. You may also use the arrow keys up, down, left, right for direction; and the spacebar for controlling the pen servo.
 
 	<img src="_images/bot_control_manual.png" width="300px">
 
