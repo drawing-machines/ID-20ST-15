@@ -69,7 +69,7 @@ The Arduino firmware for the Draw Bot requires two additional libraries be insta
 #### Running the bot
 
 
-1. With the USB still connected, plug in the motor power cable the robot.
+1. With the USB still connected, plug in the motor power cable to the robot.
 
 	<img src="_images/connect_motor_power.png" width="300px">
 
@@ -80,7 +80,7 @@ The Arduino firmware for the Draw Bot requires two additional libraries be insta
 	
 	<img src="_images/bot_app_manual_run.png" width="300px">
 	
-3. At the bottom of the Processing window, in the console, look for the `port` number that the Arduino is connected to. Enter this `PORT_NUM` at the top of the sketch, and run the app again.11. 
+3. At the bottom of the Processing window, in the console, look for the `port` number that the Arduino is connected to. Enter this `PORT_NUM` at the top of the sketch, and run the app again.
 
 	
 	<img src="_images/log_port_num.png" width="300px">
