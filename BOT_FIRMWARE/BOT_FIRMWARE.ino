@@ -74,15 +74,15 @@ const float MANUAL_STP_SPEED  = 0.8;
 
 // arm stepper motor speeds
 const float ARM_CAL_SPEED = 500;  // speed during calibration
-const float ARM_MAX_SPEED = 300; // max speed during normal opperation
+const float ARM_MAX_SPEED = 400; // max speed during normal opperation
 const float ARM_ACL_SPEED = 100; // motor acceleration speed
-const float ARM_MAN_SPEED = 300;  // manual opperation speed
+const float ARM_MAN_SPEED = 200;  // manual opperation speed
 
 // base stepper motor speeds
 const float BASE_CAL_SPEED = 500;  // speed during calibration
 const float BASE_MAX_SPEED = 50; // max speed during normal opperation
 const float BASE_ACL_SPEED = 50; // motor acceleration speed
-const float BASE_MAN_SPEED = 25; // manual opperation speed
+const float BASE_MAN_SPEED = 10000; // manual opperation speed
 
 
 
@@ -127,8 +127,8 @@ Adafruit_StepperMotor * af_baseStp = motorShield.getStepper(STEPS_PER_REV, 2);
 // configurable to: DOUBLE, INTERLEAVE or MICROSTEP
 void armStpFwd()  { af_armStp->onestep(  FORWARD,  DOUBLE); }
 void armStpBck()  { af_armStp->onestep(  BACKWARD, DOUBLE); }
-void baseStpFwd() { af_baseStp->onestep( FORWARD,  DOUBLE); }
-void baseStpBck() { af_baseStp->onestep( BACKWARD, DOUBLE); }
+void baseStpFwd() { af_baseStp->onestep( FORWARD,  MICROSTEP); }
+void baseStpBck() { af_baseStp->onestep( BACKWARD, MICROSTEP); }
 
 // Wrap the steppers in an AccelStepper object
 AccelStepper armStp(armStpFwd, armStpBck);
@@ -323,7 +323,7 @@ void movePenToNewPosition() {
     baseStp.run();
     
   } else {
-    af_baseStp->release();
+    //af_baseStp->release();
     //TODO: runto
   }
 }
