@@ -3,10 +3,6 @@
 void goHome() {
   
   moveTo(ORIGIN_X, ORIGIN_Y);
-
-//  nextX = ORIGIN_X;
-//  nextY = ORIGIN_Y;
-//  moveAuto = true;
 }
 
 // draws a line from current position to x, y
@@ -22,34 +18,13 @@ void moveTo(float x, float y) {
   motorsTo(x, y);
 }
 
-//draws a circle by drawing 360 lines
-void drawCircle(float x, float y, float radius) {
-  
-  moveTo(x + radius, y);
 
-  for (float i = 0; i <= 360; i += 1.0) {
-    float newX = x + cos(((float) i / 360.0) * 2.0 * M_PI) * radius;
-    float newY = y + sin(((float) i / 360.0) * 2.0 * M_PI) * radius;
-
-    lineTo(newX, newY);
-  }
-}
-
-// Draws a rect. x, y is lower left corner.
-void drawRect(float x, float y, float width, float height) {
-  
-  moveTo(x, y);
-  lineTo(x, y + height);
-  lineTo(x + width, y + height);
-  lineTo(x + width, y);
-  lineTo(x, y);
-}
+//TODO: this all needs refactoring
 
 bool _isReadyNextStep = false;
 bool _isReadyNextMove = false;
 int  stepsToMove = 0;
 int  currStep = 0;
-
 
 
 double _stepX;

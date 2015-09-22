@@ -129,6 +129,7 @@ void listenSerial() {
       while( !Serial.available() ); // wait for int value
       
       newArmStpVal = int( map(Serial.parseInt(), 0, 255, 0, MAX_ARM_STEPS) );
+      
       Serial.print("a : ");
       Serial.println(newArmStpVal);
       
@@ -136,12 +137,11 @@ void listenSerial() {
       
       while(!Serial.available()); //wait for int val
       
-      //TODO:
-      //newBaseSrvVal = int( map(Serial.parseInt(), 0, 255, 0, maxBaseSrvVal) );
+      newBaseStpVal = int( map(Serial.parseInt(), 0, 255, 0, MAX_BASE_STEPS) );
       
       if(debug) {
         Serial.print("b : ");
-        //Serial.println(newBaseSrvVal);
+        Serial.println(newBaseStpVal);
       }
       
     } else if(readByte == 's') { // stop moving manually
@@ -159,10 +159,7 @@ void listenSerial() {
         
         manualMoveRight = false;
         manualMoveLeft  = false;
-        //TODO:
-        //baseValSaved = false;
-        //newBaseSrvVal = baseSrvVal;
-        //Serial.println(newBaseSrvVal);
+        newBaseStpVal = baseStp.currentPosition();
       }
       
       if(stopByte == 'f' || stopByte == 'k') {
@@ -174,32 +171,11 @@ void listenSerial() {
   }
 }
 
-void establishContact(){
-  while (Serial.available() <=0){
+void establishContact() {
+  while ( Serial.available() <=0 ) {
+    // processing sketch listens for the symbols "!!"
+    // this indicates the bot is ready and listening
     Serial.println("!!");
     delay(1000);
   }  
-}
-
-void reportPosition() {
-  
-  //TODO:
-//  convertedArmStpVal = int(map(armStp.currentPosition(), 0, MAX_ARM_STEPS, 0, 255));
-//  if(convertedArmStpVal != lastConvertedArmStpVal){
-//    Serial.println('t');
-//    Serial.println(convertedArmStpVal);
-//    lastConvertedArmStpVal = convertedArmStpVal;
-//  }
-//  
-//  if(baseSrvVal != lastBaseSrvVal){
-//    Serial.println('b');
-//    Serial.println(int(map(baseSrvVal, 0, maxBaseSrvVal, 0, 255)));
-//    lastBaseSrvVal = baseSrvVal;
-//  }
-//  
-//  if(penSrvVal != lastPenSrvVal){
-//    Serial.println('s');
-//    Serial.println(int(map(penSrvVal, 50, 90, 0, 255)));
-//    lastPenSrvVal = penSrvVal;
-//  }
 }

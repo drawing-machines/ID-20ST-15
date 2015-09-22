@@ -18,12 +18,10 @@ BOT FIRMWARE V0.4.0
 
 /* PIN MAPPING
    -------------------------------------- */
-#define ARM_END_STOP_PIN    3 // arm end limit  
-#define ARM_HOME_STOP_PIN   4 // arm home limit (0 mm)
-
-#define BASE_HOME_STOP_PIN  5 // base home limit (0 deg)
+#define ARM_END_STOP_PIN    3  // arm end limit  
+#define ARM_HOME_STOP_PIN   4  // arm home limit (0 mm)
+#define BASE_HOME_STOP_PIN  5  // base home limit (0 deg)
 #define BASE_END_STOP_PIN   A5 // base end limit (180 deg)
-
 #define PEN_SERVO_PIN 10
 
 /* DEBUG
@@ -50,7 +48,7 @@ const float  CANVAS_CENT_Y = CANVAS_H/2;
 //only supports top-left registration right now
 const String CANVAS_REG = "tl";
 
-// max radius based on canvas dimensions
+// max radius (calculated from canvas dims)
 const float MAX_RAD = sqrt( sq(CANVAS_W / 2 ) + sq( CANVAS_H ) ); //162.64
 //const float MAX_ANG; //not used
 
@@ -63,8 +61,9 @@ float STEPS_PER_DEG;
 
 /* ARM STEPPER CONFIG
    -------------------------------------- */
-int ARM_STEP_DIR = -1; // 1 or -1 (effectively flips the stepper directions)
-
+// 1 or -1 (effectively flips the stepper directions)
+int ARM_STEP_DIR = -1;  // NOTE: these are not currently being used
+int BASE_STEP_DIR = 1;
 
 /* MOTOR SPEEDS
    -------------------------------------- */
@@ -85,13 +84,14 @@ const float BASE_MAX_SPEED = 50; // max speed during normal opperation
 const float BASE_ACL_SPEED = 50; // motor acceleration speed
 const float BASE_MAN_SPEED = 25; // manual opperation speed
 
-// serial communication speed
-#define SER_BAUD 115200 // bits per second
+
 
 int MAX_ARM_STEPS; //maximum travel distance.
 int MAX_BASE_STEPS;
 
 long newArmStpVal = 0;
+long newBaseStpVal = 0;
+
 int convertedArmStpVal    =  0;
 int lastConvertedArmStpVal = 0;
 
@@ -185,7 +185,10 @@ float lastArmPos  = 0;
 float currBasePos = 0;
 float lastBasePos = 0;
 
-/* APPLICATTION START
+// serial communication speed
+#define SER_BAUD 115200 // bits per second
+
+/* APPLICATTION SETUP
    -------------------------------------- */
 void setup() {
   
