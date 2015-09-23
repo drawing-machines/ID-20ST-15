@@ -127,6 +127,7 @@ Boolean ROBOT_VIEW  = false; //view xy (default) or polar
 Boolean BOT_RUNNING = false;
 Boolean SIM_RUNNING = false;
 Boolean CLEAR_SIM   = false;
+Boolean SEND_NEXT_COORD  = true; 
 
 // define some variables
 ArrayList<PVector> BOT_CODE;
@@ -143,6 +144,10 @@ float canvasX, canvasY;
 
 float botViewScaleX = 0;
 float botViewScaleY = 0;
+
+Serial serial;
+String header;
+boolean firstContact = false;
 
 /* SETTTINGS
  ---------------------------------------------------*/
@@ -253,11 +258,16 @@ void draw() {
    
   }
   
-  if (SIM_RUNNING) {
+  if(BOT_RUNNING && SEND_NEXT_COORD) {
+
+    SEND_NEXT_COORD = false;
+    sendBotCoords();
+    
+  } else if (SIM_RUNNING) {
     
     drawBotCode();
     
-  } else if(ROBOT_VIEW) {
+  } else if(ROBOT_VIEW && !BOT_RUNNING) {
     
     if (mouseX > canvas_top_left.x &&
         mouseX < canvas_btm_right.x &&
@@ -470,7 +480,31 @@ void drawGuides() {
   popMatrix();
 }
 
-// run the robot drawing code
+// run the actual robot drawing code
+void sendBotCoords() {
+  
+  if (!BOT_CODE.isEmpty()) { 
+    
+    println("sending bot coord");
+    int arm, base;
+    
+    serial.write("a2");
+    arm = int(map(BOT_CODE.get(0).x, 0, CANVAS_WIDTH_PX, 0, 255));
+    //serial.write(arm);
+
+    serial.write("b1");
+    base = int(map(degrees(BOT_CODE.get(0).y), 0, 180, 0, 255));
+    //serial.write(base);
+    
+    drawBotCode();
+    
+  } else {
+    println("IS EMPTY");
+  }
+ 
+}
+
+// run the simulated robot drawing code
 void drawBotCode() {
   
   // check to see if robot is moving, if not we'll 

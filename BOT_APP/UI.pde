@@ -142,6 +142,7 @@ void mouseReleased() {
         clearBotCode();
         // read the bot code again (fresh list of commands)
         readBotCode();
+        
         // set flag to indicate sim is running
         SIM_RUNNING = true;
         
@@ -159,6 +160,13 @@ void mouseReleased() {
       runBtn.setActive(false);
       
     } else { // else, let's fire it up!
+    
+      // clear the last sim drawing (if there is one)
+      eraseDrawing();
+      // clear out any unexecuted commands
+      clearBotCode();
+      // read the bot code again (fresh list of commands)
+      readBotCode();
       
       BOT_RUNNING = true;
       runBtn.setColor(orange);

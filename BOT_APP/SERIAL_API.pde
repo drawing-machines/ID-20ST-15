@@ -1,21 +1,24 @@
 import processing.serial.*;
-Serial serial;
-String val;
-String header;
-boolean firstContact = false;
-
 void serialEvent(Serial serial) {
-  
+ 
   header = serial.readStringUntil('\n');
+  
   if( header != null){
+    
     header = trim(header);
     
-    if(header.equals("ready") && firstContact == false){
+    if(header.equals("ready") && !firstContact) {
+      
       serial.clear();
       firstContact = true;
       serial.write(1); // send digital to initiate bot
-      println("bot is connected");
-    } else{
+      
+    } else if(header.equals("next")) {
+      
+      SEND_NEXT_COORD = true;
+      
+    } else {
+      
       println(header);
     }
   }

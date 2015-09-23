@@ -251,11 +251,12 @@ void setup() {
   // set the steps per mm
   STEPS_PER_MM = abs(MAX_ARM_STEPS) / ARM_LENGTH;
   
-  Serial.println("bot is ready...listening for commands");
+  
   
   // wait here for system handshake
   establishContact();
  
+  Serial.println("connected to bot");
 }
 
 // MAIN LOOP
@@ -298,11 +299,11 @@ void movePenToNewPosition() {
    Serial.println("DOING NEXT MOVE");
    
    //do the move
-   delay(1000);
+   //delay(3000);
    
    readyNextMove = false;
    
-   Serial.println("readyForNextCoord");
+   Serial.println("next");
    
   }
   
