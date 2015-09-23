@@ -5,10 +5,14 @@
  *
  **/
 
+/* SERIAL PORT CONFIGURATION
+ ---------------------------------------------------*/
+int PORT_NUM = 2; // change to match your port number
+                  // use Serial.list() to find port
 
 /* CONSTANT VALUES
  ---------------------------------------------------*/
-
+ 
 // CONSTANT VALUES
 final float PPI = 72; // pixels per inch
 final float PPM = 2.8346; // pixels per mm
@@ -154,7 +158,6 @@ void settings() {
  ---------------------------------------------------*/
 
 void setup() {
-
   // set the frame rate
   // If processor is not fast enough to maintain the specified rate, 
   // the frame rate will not be achieved (skips frames)
@@ -216,6 +219,21 @@ void setup() {
   
   canvasX = 0;
   canvasY = 0;
+  
+  // port configuration
+  
+  // prints out the available serial ports
+  println("[ PORT_NUM ] : /dev/PORT_NAME \n"); 
+  for(int i = 0; i < Serial.list().length; i++) {
+    println(" [ " + i + " ] : " + Serial.list()[i]); 
+  }
+
+  String port = Serial.list()[PORT_NUM];
+  serial = new Serial(this, port, 115200);
+  
+  //trigger the serialEvent when a return '\n' is read
+  serial.bufferUntil('\n');
+
 }
 
 /* DRAW

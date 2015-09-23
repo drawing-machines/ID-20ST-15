@@ -125,6 +125,8 @@ void listenSerial() {
       }
       
     } else if(readByte == 'a') { // set arm coordinate
+    
+      armCoordBuffered = true;
       
       while( !Serial.available() ); // wait for int value
       
@@ -134,6 +136,8 @@ void listenSerial() {
       Serial.println(newArmStpVal);
       
     } else if(readByte == 'b') { // set base coordinate
+    
+      baseCoordBuffered = true;
       
       while(!Serial.available()); //wait for int val
       
@@ -172,10 +176,11 @@ void listenSerial() {
 }
 
 void establishContact() {
+  
   while ( Serial.available() <=0 ) {
-    // processing sketch listens for the symbols "!!"
-    // this indicates the bot is ready and listening
-    Serial.println("!!");
+    // processing sketch listens for "ready"
+    // indicating the bot is ready and listening
+    Serial.println("ready");
     delay(1000);
   }  
 }

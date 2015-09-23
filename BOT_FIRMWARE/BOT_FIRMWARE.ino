@@ -7,6 +7,12 @@ BOT FIRMWARE V0.4.0
 
 **************************************/
 
+bool readyNextMove = false;
+bool robotMoving = false;
+
+bool armCoordBuffered = false;
+bool baseCoordBuffered = false;
+
 // NOTE: Uses AccelStepper lib with AF_motor support
 // https://github.com/adafruit/AccelStepper
 #include <AccelStepper.h> 
@@ -204,12 +210,11 @@ void setup() {
   penSrv.detach(); //hack to prevent the jitters
   penSrvReady = true;
   
-  // initialize base servo
-//  EEPROM.get( eeAddrBase, baseSrvVal ); //get last pos from EEPROM
-//  if(debug) {
-//    Serial.print("EEPROM servo value = ");
-//    Serial.println(baseSrvVal);
-//  }
+  //  EEPROM.get( eeAddrBase, baseSrvVal ); //get last pos from EEPROM
+  //  if(debug) {
+  //    Serial.print("EEPROM servo value = ");
+  //    Serial.println(baseSrvVal);
+  //  }
 
   //TODO: setup base, calibrate
   
@@ -257,6 +262,7 @@ void setup() {
 // ----------------------------------------------------------
 
 void loop() {
+ 
 
   movePenToNewPosition();
   
@@ -279,6 +285,25 @@ void loop() {
 // ----------------------------------------------------------
 
 void movePenToNewPosition() {
+  
+  
+  if(armCoordBuffered && baseCoordBuffered) {
+    readyNextMove = true;
+    armCoordBuffered = false;
+    baseCoordBuffered = false;
+  }
+  
+  if(readyNextMove) {
+    
+   Serial.println("DOING NEXT MOVE");
+   //do the move
+   delay(1000);
+   
+   readyNextMove = false;
+   
+   Serial.println("readyForNextCoord");
+   
+  }
   
   if(manualMoveForward) {
     
