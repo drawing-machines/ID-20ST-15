@@ -293,9 +293,10 @@ void movePenToNewPosition() {
     baseCoordBuffered = false;
   }
   
-  if(readyNextMove) {
+  if(readyNextMove) { //simulate movement
     
    Serial.println("DOING NEXT MOVE");
+   
    //do the move
    delay(1000);
    

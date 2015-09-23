@@ -13,8 +13,8 @@ void serialEvent(Serial serial) {
     if(header.equals("ready") && firstContact == false){
       serial.clear();
       firstContact = true;
-      serial.write("bot is ready");
-      println("contacted");
+      serial.write(1); // send digital to initiate bot
+      println("bot is connected");
     } else{
       println(header);
     }
