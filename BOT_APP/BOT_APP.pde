@@ -4,6 +4,8 @@
  *
  *
  **/
+ 
+import processing.pdf.*;
 
 /* SERIAL PORT CONFIGURATION
  ---------------------------------------------------*/
@@ -238,7 +240,6 @@ void setup() {
   
   //trigger the serialEvent when a return '\n' is read
   serial.bufferUntil('\n');
-
 }
 
 /* DRAW
@@ -507,7 +508,7 @@ void sendBotCoords() {
 // run the simulated robot drawing code
 void drawBotCode() {
   
-  // check to see if robot is moving, if not we'll 
+  // check to see if robot is moving, if not we'll execute the next coord
   if (isRobotMoving == false) {
 
     // check to see if we executed all bot commands
