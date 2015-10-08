@@ -7,7 +7,7 @@
  */
  
 // Declar UI Buttons
-SimpleButton runBtn, botModeBtn, simModeBtn, botViewBtn, canViewBtn; 
+SimpleButton runBtn, botModeBtn, simModeBtn, botViewBtn, canViewBtn, makeSvgBtn; 
 
 class SimpleButton {
   PVector position;
@@ -111,6 +111,9 @@ void keyPressed() {
     armPosition-=armSpeed;
     if (armPosition < 0) armPosition = 0;
     break;
+  case 32: // spacebar
+    makeSVG();
+    break;
   default:
     println(keyCode);
     break;
@@ -120,6 +123,11 @@ void keyPressed() {
 void mouseReleased() {
   int x = mouseX;
   int y = mouseY;
+  
+  if(!makeSvgBtn.isClicked(x, y)) {
+    loop();
+    SHOW_SVG = false;
+  }
   
   // handle button action
   if (runBtn.isClicked(x, y)) {
@@ -219,6 +227,22 @@ void mouseReleased() {
     canViewBtn.setActive(true); // enable canvas view btn
     botViewBtn.setActive(false); //disable robot view btn
    
+  } else if(makeSvgBtn.isClicked(x, y)) {
+    
+    if(SIM_RUNNING) { 
+      SIM_RUNNING = false;
+      runBtn.setLabel("run");
+      runBtn.setActive(false);
+    }
    
+    eraseDrawing(); //clears last drawing (if there is one)
+    
+    ROBOT_VIEW = false; // activates canvas view
+    
+    canViewBtn.setActive(true); // enable canvas view btn
+    botViewBtn.setActive(false); //disable robot view btn
+    
+    makeSVG();
+    
   }
 }
