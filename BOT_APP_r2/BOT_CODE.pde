@@ -121,7 +121,7 @@ void myRobotCode () {
  /* EXAMPLE 5: SPIDER WEB
    *******************************************/
    
-  int   angles = 3; // try changing the angles to 12, 8, 6 and 4
+  int   angles = 30; // try changing the angles to 12, 8, 6 and 4
   float radius = 100;
   
   float h = width/2;

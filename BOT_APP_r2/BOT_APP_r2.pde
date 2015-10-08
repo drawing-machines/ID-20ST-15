@@ -131,10 +131,12 @@ Boolean BOT_RUNNING = false;
 Boolean SIM_RUNNING = false;
 Boolean CLEAR_SIM   = false;
 Boolean SEND_NEXT_COORD  = true; 
-boolean record = false;
+Boolean SHOW_SVG = false;
 
 // define some variables
 ArrayList<PVector> BOT_CODE;
+ArrayList<PShape> SVG_SHAPES = new ArrayList<PShape>();
+
 PVector nextCommand;
 long    currTime;       // store the current time
 Boolean isRobotMoving;  // indicates when robot is moving
@@ -205,8 +207,10 @@ void setup() {
   // initialize the bot code coordinates array
   // this is used to store the robot commands
   BOT_CODE = new ArrayList<PVector>();
+  SVG_SHAPES = new ArrayList<PShape>();
 
   // Setup the UI elements
+  makeSvgBtn = new SimpleButton(new PVector(width - 55, height - 15), 100, 20, "make svg");
   simModeBtn = new SimpleButton(new PVector(width - 265, 15), 100, 20, "sim mode");
   botModeBtn = new SimpleButton(new PVector(width - 160, 15), 100, 20, "bot mode");
   runBtn     = new SimpleButton(new PVector(width - 55, 15), 100, 20, "run");
@@ -225,10 +229,6 @@ void setup() {
   
   // initialize the frame buffer object for the simulated graphics
   simGraphics = createGraphics(width, height);
-  
-  // Custom, unique shapes can be made by using createShape() without a parameter
-  // https://processing.org/reference/createShape_.html
-  svgDrawing  = createShape();
   
   botViewScaleX = float(CANVAS_WIDTH_PX)/float(width);
   botViewScaleY = float(CANVAS_HEIGHT_PX)/float(height);
@@ -253,7 +253,7 @@ void setup() {
 
 /* DRAW
  ---------------------------------------------------*/
-boolean drawingIsComplete = false;
+
 void draw() {
   
   background(white);
@@ -265,7 +265,6 @@ void draw() {
 
     //drawBotArm( currentRadius, currentAngle, lightGray );
     drawBotArm( currentRadiusOffset, currentAngle + currentAngleOffset, lightGreen );
-   
   }
   
   if(BOT_RUNNING && SEND_NEXT_COORD) {
@@ -288,87 +287,32 @@ void draw() {
         animateBot(mouseX, mouseY);
     } 
   }
+
   
-  // Draw the buttons
-  simModeBtn.render();
-  botModeBtn.render();
-  botViewBtn.render();
-  canViewBtn.render();
-  runBtn.render();
-  
-  // Draws simulated drawing
-  //if(record) {
-  //  beginRecord(PDF, "frame-####.pdf");
-  //}
-  //image(simGraphics, 0, 0);
-  //shape(svgDrawing, 0, 0);
-  //if(record) {
-  //  endRecord();
-  //  record = false;
-  //}
-  if(drawingIsComplete) {
-    beginRecord(PDF, "frame-####.pdf"); 
-    shape(svgDrawing, 0, 0);
-    endRecord();
-    drawingIsComplete = false;
-  }
-}
-
-void drawConversionGuide() {
- 
-  pushMatrix();
-    translate(canvas_top_left.x, canvas_top_left.y);
-    noStroke();
-    fill(0, 0, 200);
-    ellipse( canvasX, canvasY, 10, 10 );
-    noFill();
-    strokeWeight(1);
-    stroke(0, 0, 200);
-    line(0, 0, canvasX, canvasY);
-  popMatrix();
- 
-}
-
-void animateBot(float x, float y) {
-  
-  pushMatrix();
-
-  //translate to top left of drawing canvas
-  translate(canvas_top_left.x, canvas_top_left.y);
-
-  // translate mouseX, mouseY to top left of canvas
-  canvasX = x - canvas_top_left.x;
-  canvasY = y - canvas_top_left.y;
-
-  //println( "converting point " + canvasX + ", " + canvasY ); 
-
-  float cartesianX;
-  float cartesianY;
-
-  cartesianX = canvasX - (botOrigin.x - canvas_top_left.x);
-  cartesianY = (botOrigin.y - canvas_top_left.y) - (canvasY);
-
-  PVector polar = getPolar(cartesianX, cartesianY);
-
-  currentAngle = polar.y;
-  currentRadius = polar.x;
-
-  float hyp = currentRadius;
-  float opp = offsetPen_px;
-  float adj = sqrt(sq(hyp) - sq(opp));
-
-  currentAngleOffset = asin( sin(opp/hyp) );
-  currentRadiusOffset = adj;
-
-  float hyp2 = currentRadius + botOffsetRadius_px;
-  float opp2 = offsetPen_px;
-  float adj2 = sqrt(sq(hyp2) - sq(opp2));
-
-  currentAngleOffset2 = asin( sin(opp2/hyp2) );
-  currentRadiusOffset2 = adj2;
+  if(SHOW_SVG) {
     
-  //println( "    polar coords: ang: " + currentAngle + ", rad: " + currentRadius );
-  popMatrix();
+    // create a new pdf image
+    beginRecord(PDF, "frame-####.pdf");
+    for (int i = SVG_SHAPES.size() - 1; i >= 0; i--) {
+       shape(SVG_SHAPES.get(i), 0, 0); 
+    }
+    endRecord();
+    noLoop();
+    
+  } else {
+    
+    // Draw the buttons
+    simModeBtn.render();
+    botModeBtn.render();
+    botViewBtn.render();
+    canViewBtn.render();
+    runBtn.render();
+    makeSvgBtn.render();
+    
+    // Draws simulated drawing
+    image(simGraphics, 0, 0);
+  }
+ 
 }
 
 void updateCoords() {
@@ -383,14 +327,9 @@ void updateCoords() {
     //translate to top left of drawing canvas
     translate(canvas_top_left.x, canvas_top_left.y);
 
-    //float canvasX = float(mouseX);
-    //float canvasY = float(mouseY);
-
     // translate mouseX, mouseY to top left of canvas
     float canvasX = float(mouseX) - canvas_top_left.x;
     float canvasY = float(mouseY) - canvas_top_left.y;
-
-    //println( "converting point " + canvasX + ", " + canvasY ); 
 
     noStroke();
     fill(0, 0, 200);
@@ -404,11 +343,6 @@ void updateCoords() {
 
     cartesianX = canvasX - (botOrigin.x - canvas_top_left.x);
     cartesianY = (botOrigin.y - canvas_top_left.y) - (canvasY);
-
-    //println(cartesianX);
-    //println(cartesianY);
-
-    //println( "  in bot reference: " + cartesianX + ", " + cartesianY );
 
     PVector polar = getPolar(cartesianX, cartesianY);
 
@@ -429,79 +363,8 @@ void updateCoords() {
     currentAngleOffset2 = asin( sin(opp2/hyp2) );
     currentRadiusOffset2 = adj2;
 
-    //println( "    polar coords: ang: " + currentAngle + ", rad: " + currentRadius );
     popMatrix();
   }
-}
-
-void drawBotArm(float r, float a, color c) {
-
-  pushMatrix();
-
-  // translate to bot origin
-  translate(botOrigin.x, botOrigin.y);
-
-  // rotate matrix to current angle
-  rotate( -a ); // ccw
-
-  // draw the arm
-  noStroke();
-  fill(c);
-  ellipse( r, 0, 10, 10 );
-
-  noFill();
-  strokeWeight(3);
-  stroke(c);
-  line(-botBasePivotToArmBtm_px, 0, botArmLength_px, 0);
-  
-  // draw pivot point
-  ellipse(0, 0, 100, 100);
-
-  noFill();
-  stroke(c);
-  line( r, 0, r, offsetPen_px );
-
-  noStroke();
-  fill(c);
-  ellipse( r, offsetPen_px, 10, 10 );
-
-  popMatrix();
-}
-
-
-void drawCanvas() {
-
-  pushMatrix();
-  rectMode(CENTER);
-  fill(canvasTan);
-  stroke(orange);
-  rect(width/2, height/2 - offsetCanvasVert_px, CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX);
-  popMatrix();
-}
-
-void drawOffsets() {
-
-  pushMatrix();
-  strokeWeight(3);
-  noFill();
-  stroke(240, 97, 30);
-  line(canvas_cent_btm.x, canvas_cent_btm.y, canvas_cent_btm.x, canvas_cent_btm.y + offsetBase_px);
-  popMatrix();
-}
-
-void drawGuides() {
-
-  pushMatrix();
-
-  strokeWeight(1);
-  stroke(lightGreen);
-  noFill();
-
-  float radius = sqrt( sq(CANVAS_WIDTH_PX/2) + sq(CANVAS_HEIGHT_PX) );
-  ellipse(width/2, canvas_cent_btm.y, radius * 2, radius * 2);
-  line(0, canvas_cent_btm.y, width, canvas_cent_btm.y);
-
-  popMatrix();
 }
 
 // run the actual robot drawing code
@@ -606,15 +469,13 @@ void drawBotCode() {
     simGraphics.beginDraw();
     
     // set the size of the stroke (stylus)
-    //simGraphics.strokeWeight(STYLUS_SIZE);
+    simGraphics.strokeWeight(STYLUS_SIZE);
 
     // stroke the line to make it visible (provide the stylus color)
-   // simGraphics.stroke(STYLUS_COLOR);
-    svgDrawing.stroke(STYLUS_COLOR);
+    simGraphics.stroke(STYLUS_COLOR);
     
     // continue drawing our line from the current position
-    //simGraphics.line(currX, currY, currX + stepX, currY + stepY);
-    svgDrawing.vertex(currX + stepX, currY + stepY);
+    simGraphics.line(currX, currY, currX + stepX, currY + stepY);
     
     // end drawing to the pixel buffer
     simGraphics.endDraw();
@@ -640,11 +501,6 @@ void drawBotCode() {
     SIM_RUNNING = false; //turn off sim
     runBtn.setLabel("run sim"); //reset button
     runBtn.setActive(SIM_RUNNING); //deactivate button
-    
-    drawingIsComplete = true;
-    svgDrawing.endShape();
-    endRecord();
-    println("ending record");
   }
 
   // update the stored time
@@ -654,10 +510,10 @@ void drawBotCode() {
 
 void eraseDrawing() {
   
-  //simGraphics.beginDraw();
-  //simGraphics.noStroke();
-  //simGraphics.fill(white);
-  //simGraphics.background(255, 0);  // transparent white
-  //simGraphics.endDraw();
-  //image(simGraphics, 0, 0);
+  simGraphics.beginDraw();
+  simGraphics.noStroke();
+  simGraphics.fill(white);
+  simGraphics.background(255, 0);  // transparent white
+  simGraphics.endDraw();
+  image(simGraphics, 0, 0);
 }
