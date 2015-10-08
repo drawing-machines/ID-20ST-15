@@ -28,6 +28,7 @@ bool baseCoordBuffered = false;
 #define ARM_HOME_STOP_PIN   4  // arm home limit (0 mm)
 #define BASE_HOME_STOP_PIN  5  // base home limit (0 deg)
 #define BASE_END_STOP_PIN   A5 // base end limit (180 deg)
+//#define BASE_END_STOP_PIN   2 // base end limit (180 deg)
 #define PEN_SERVO_PIN 10
 
 /* DEBUG
@@ -151,7 +152,8 @@ bool recalibrate = false;
 bool armHomeStopState  = HIGH;
 bool armEndStopState   = HIGH;
 bool baseHomeStopState = HIGH;
-bool baseEndStopState  = HIGH;
+//bool baseEndStopState  = HIGH;
+int baseEndStopState  = 1023;
 
 // eeprom data
 bool baseValSaved = false;
@@ -240,18 +242,19 @@ void setup() {
   pinMode(ARM_HOME_STOP_PIN, INPUT_PULLUP);
   pinMode(ARM_END_STOP_PIN , INPUT_PULLUP);
   pinMode(BASE_HOME_STOP_PIN, INPUT_PULLUP);
-  pinMode(BASE_END_STOP_PIN, INPUT_PULLUP);
+  pinMode(BASE_END_STOP_PIN, INPUT);
+
+  digitalWrite(BASE_END_STOP_PIN, HIGH);
+//  pinMode(BASE_END_STOP_PIN, INPUT);
   
   //the calibration function sets the MAX_ARM_STEPS
-  //calibrateArm();
-  
+  calibrateArm();
+
+  //the calibration function sets the MAX_BASE_STEPS
+  calibrateBase();
   //TMP dummy value (TODO: this should be calculated in base calibration)
   // MAX_BASE_STEPS = 
-  
-  // set the steps per mm
-  STEPS_PER_MM = abs(MAX_ARM_STEPS) / ARM_LENGTH;
-  
-  
+ 
   
   // wait here for system handshake
   establishContact();
@@ -394,7 +397,7 @@ void checkStops() {
   }
   
   if(baseEndStopState == LOW) {
-
+    Serial.println("base end stop pin");
     baseStp.setCurrentPosition(MAX_BASE_STEPS);
     currBasePos = MAX_BASE_STEPS;
     if(!atBaseStop) {
