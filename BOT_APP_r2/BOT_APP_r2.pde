@@ -5,6 +5,8 @@
  *
  **/
  
+import processing.pdf.*;
+
 /* SERIAL PORT CONFIGURATION
  ---------------------------------------------------*/
 int PORT_NUM = 2; // change to match your port number
@@ -88,6 +90,7 @@ float botOffsetRadius_px = BOT_OFFSET_RADIUS_MM * PPM; //new
 float armPosition = 0;
 
 PGraphics simGraphics;
+PShape svgDrawing; //vector drawing
 
 // convenience coords
 PVector 
@@ -150,6 +153,8 @@ Serial serial;
 String header;
 boolean firstContact = false;
 
+boolean drawingStarted = false;
+
 /* SETTTINGS
  ---------------------------------------------------*/
 
@@ -164,6 +169,7 @@ void settings() {
  ---------------------------------------------------*/
 
 void setup() {
+  
   // set the frame rate
   // If processor is not fast enough to maintain the specified rate, 
   // the frame rate will not be achieved (skips frames)
@@ -220,6 +226,10 @@ void setup() {
   // initialize the frame buffer object for the simulated graphics
   simGraphics = createGraphics(width, height);
   
+  // Custom, unique shapes can be made by using createShape() without a parameter
+  // https://processing.org/reference/createShape_.html
+  svgDrawing  = createShape();
+  
   botViewScaleX = float(CANVAS_WIDTH_PX)/float(width);
   botViewScaleY = float(CANVAS_HEIGHT_PX)/float(height);
   
@@ -243,7 +253,7 @@ void setup() {
 
 /* DRAW
  ---------------------------------------------------*/
-
+boolean drawingIsComplete = false;
 void draw() {
   
   background(white);
@@ -287,7 +297,21 @@ void draw() {
   runBtn.render();
   
   // Draws simulated drawing
-  image(simGraphics, 0, 0);
+  //if(record) {
+  //  beginRecord(PDF, "frame-####.pdf");
+  //}
+  //image(simGraphics, 0, 0);
+  //shape(svgDrawing, 0, 0);
+  //if(record) {
+  //  endRecord();
+  //  record = false;
+  //}
+  if(drawingIsComplete) {
+    beginRecord(PDF, "frame-####.pdf"); 
+    shape(svgDrawing, 0, 0);
+    endRecord();
+    drawingIsComplete = false;
+  }
 }
 
 void drawConversionGuide() {
@@ -572,7 +596,7 @@ void drawBotCode() {
     //if robot is moving, continue until move complete
   } else if (currStep < numSteps) {
     
-    // draw!
+    // DRAW !!!
     
     if(ROBOT_VIEW) {
       animateBot(currX + stepX, currY + stepY); 
@@ -582,13 +606,15 @@ void drawBotCode() {
     simGraphics.beginDraw();
     
     // set the size of the stroke (stylus)
-    simGraphics.strokeWeight(STYLUS_SIZE);
+    //simGraphics.strokeWeight(STYLUS_SIZE);
 
     // stroke the line to make it visible (provide the stylus color)
-    simGraphics.stroke(STYLUS_COLOR);
-
+   // simGraphics.stroke(STYLUS_COLOR);
+    svgDrawing.stroke(STYLUS_COLOR);
+    
     // continue drawing our line from the current position
-    simGraphics.line(currX, currY, currX + stepX, currY + stepY);
+    //simGraphics.line(currX, currY, currX + stepX, currY + stepY);
+    svgDrawing.vertex(currX + stepX, currY + stepY);
     
     // end drawing to the pixel buffer
     simGraphics.endDraw();
@@ -614,6 +640,11 @@ void drawBotCode() {
     SIM_RUNNING = false; //turn off sim
     runBtn.setLabel("run sim"); //reset button
     runBtn.setActive(SIM_RUNNING); //deactivate button
+    
+    drawingIsComplete = true;
+    svgDrawing.endShape();
+    endRecord();
+    println("ending record");
   }
 
   // update the stored time
@@ -623,10 +654,10 @@ void drawBotCode() {
 
 void eraseDrawing() {
   
-  simGraphics.beginDraw();
-  simGraphics.noStroke();
-  simGraphics.fill(white);
-  simGraphics.background(255, 0);  // transparent white
-  simGraphics.endDraw();
-  image(simGraphics, 0, 0);
+  //simGraphics.beginDraw();
+  //simGraphics.noStroke();
+  //simGraphics.fill(white);
+  //simGraphics.background(255, 0);  // transparent white
+  //simGraphics.endDraw();
+  //image(simGraphics, 0, 0);
 }
