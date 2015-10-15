@@ -292,7 +292,7 @@ void draw() {
   if(SHOW_SVG) {
     
     // create a new pdf image
-    beginRecord(PDF, "frame-####.pdf");
+    beginRecord(PDF, "data/frame-####.pdf");
     for (int i = SVG_SHAPES.size() - 1; i >= 0; i--) {
        shape(SVG_SHAPES.get(i), 0, 0); 
     }
